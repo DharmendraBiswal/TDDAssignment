@@ -1,14 +1,17 @@
 package com.yash.TDDAssignment;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 
 import java.util.logging.Logger;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -85,10 +88,25 @@ public class StringCalculatorTest {
 	@Test
 	public void shouldReturnSumOfIntegersToLogger() {
 
-		Mockito.doNothing().when(logger).info("3");
+		doNothing().when(logger).info("3");
 
 		assertEquals(3, stringCalculator.addString("//;\n1;2"));
-		Mockito.verify(logger).info("3");
+		verify(logger).info("3");
+
+	}
+
+	@Rule 
+	public ExpectedException expectedException = ExpectedException.none();
+
+	@Test
+	public void shouldThrowRuntimeExceptionWhenInputNumberIsNegative() {
+
+		stringCalculator = new StringCalculator();
+
+		expectedException.expect(RuntimeException.class);
+		expectedException.expectMessage("Negative numbers not allowed:[-1, -2]");
+		
+		stringCalculator.addString("//;\n1;1001;4;-1;5;-2");
 
 	}
 
